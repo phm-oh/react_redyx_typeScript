@@ -12,8 +12,10 @@ import {
     Text,
     useColorModeValue,
   } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
   
   export default function login() {
+    const navigate = useNavigate();
     return (
       <Flex
         minH={'100vh'}
@@ -22,7 +24,7 @@ import {
         bg={useColorModeValue('gray.50', 'gray.800')}>
         <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
           <Stack align={'center'}>
-            <Heading fontSize={'4xl'}>Login in to your account</Heading>
+            <Heading fontSize={'4xl'}>Login in </Heading>
             <Text fontSize={'lg'} color={'gray.600'}>
               to enjoy all of our cool <Link color={'blue.400'}>features</Link> ✌️
             </Text>
@@ -50,12 +52,15 @@ import {
                   <Link color={'blue.400'}>Forgot password?</Link>
                 </Stack>
                 <Button
+                  onClick={()=>{
+                    navigate('/dashboard')
+                  }}
                   bg={'blue.400'}
                   color={'white'}
                   _hover={{
                     bg: 'blue.500',
                   }}>
-                  Sign in
+                  Log in
                 </Button>
               </Stack>
             </Stack>
