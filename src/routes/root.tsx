@@ -2,7 +2,8 @@ import { createBrowserRouter } from "react-router-dom";
 import HomePage from "../pages/home-page";
 import About from "../pages/about-page";
 import Login from "../pages/login-page.tsx";
-import DLayout from "../pages/dashboard/d-layout.tsx";
+
+import routeDashboard from "./dashboard.tsx";
 
 const router = createBrowserRouter([
   {
@@ -17,10 +18,9 @@ const router = createBrowserRouter([
     path: "/login",
     element: <Login />,
   },
-  {
-    path: "/dashboard",
-    element: <DLayout />,
-  },
+
+  ...routeDashboard,
+  
 ]);
 
 export default router;
