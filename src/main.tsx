@@ -5,7 +5,7 @@ import { RouterProvider } from 'react-router-dom'
 
 
 // import App from './App.tsx'
-import './global.css'
+import './style/global.css'
 import router from './routes/root.tsx'
 
 
