@@ -13,10 +13,19 @@ import {
     useColorModeValue,
   } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
+import { LoginFormInput } from '../app-types/login-form-input.type';
+import { SubmitHandler, useForm } from 'react-hook-form';
   
   export default function login() {
-    const navigate = useNavigate();
+    const { register, handleSubmit, formState: { errors } } = useForm<LoginFormInput>();
+    const onSubmit: SubmitHandler<LoginFormInput> = (data) => {
+      console.log(data);
+    }
+    // const navigate = useNavigate();
+
+
     return (
+       <form onSubmit={handleSubmit(onSubmit)}  noValidate>
       <Flex
         minH={'100vh'}
         align={'center'}
@@ -37,11 +46,11 @@ import { useNavigate } from 'react-router-dom';
             <Stack spacing={4}>
               <FormControl id="email">
                 <FormLabel>Email address</FormLabel>
-                <Input type="email" />
+                <Input type="email" {...register("email")}/>  { /*เป็นการลงทะเบียนตั้งชื่อว่า email เพิ้อเอาไว้ดึงค่าที่กรอก*/}
               </FormControl>
               <FormControl id="password">
                 <FormLabel>Password</FormLabel>
-                <Input type="password" />
+                <Input type="password" {...register("password")}/> {/*เป็นการลงทะเบียนตั้งชื่อว่า password เพิ้อเอาไว้ดึงค่าที่กรอก*/}
               </FormControl>
               <Stack spacing={10}>
                 <Stack
@@ -52,8 +61,9 @@ import { useNavigate } from 'react-router-dom';
                   <Link color={'blue.400'}>Forgot password?</Link>
                 </Stack>
                 <Button
+                  type='submit'
                   onClick={()=>{
-                    navigate('/dashboard')
+                    // navigate('/dashboard')
                   }}
                   bg={'blue.400'}
                   color={'white'}
@@ -67,5 +77,6 @@ import { useNavigate } from 'react-router-dom';
           </Box>
         </Stack>
       </Flex>
+      </form>
     );
   }
