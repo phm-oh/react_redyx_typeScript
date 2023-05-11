@@ -11,13 +11,23 @@ import {
     Heading,
     Text,
     useColorModeValue,
+    FormErrorMessage,
   } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { LoginFormInput } from '../app-types/login-form-input.type';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import * as yup from "yup";
+import { yupResolver } from '@hookform/resolvers/yup';
   
   export default function login() {
-    const { register, handleSubmit, formState: { errors } } = useForm<LoginFormInput>();
+    //schema validation
+    const schema = yup.object().shape({
+       email: yup.string().required('ป้อนข้อมูลอีเมล์ด้วย').email('รูปแบบอีเมลไม่ถูกต้อง'),
+       password: yup.string().required('ป้อนข้อมูลรหัสผ่านด้วย').min(4,'รหัสผ่านต้องอย่างน้อย 3 อักษรขึ้นไป'),
+    });
+    const { register, handleSubmit, formState: { errors } } = useForm<LoginFormInput>({
+       resolver: yupResolver(schema),
+    });
     const onSubmit: SubmitHandler<LoginFormInput> = (data) => {
       console.log(data);
     }
@@ -44,13 +54,19 @@ import { SubmitHandler, useForm } from 'react-hook-form';
             boxShadow={'lg'}
             p={8}>
             <Stack spacing={4}>
-              <FormControl id="email">
+              <FormControl id="email" isInvalid={errors.email ? true : false}>
                 <FormLabel>Email address</FormLabel>
                 <Input type="email" {...register("email")}/>  { /*เป็นการลงทะเบียนตั้งชื่อว่า email เพิ้อเอาไว้ดึงค่าที่กรอก*/}
+                 <FormErrorMessage>
+                    { errors.email && errors.email?.message }
+                 </FormErrorMessage>
               </FormControl>
-              <FormControl id="password">
+              <FormControl id="password" isInvalid={errors.password ? true : false}>
                 <FormLabel>Password</FormLabel>
                 <Input type="password" {...register("password")}/> {/*เป็นการลงทะเบียนตั้งชื่อว่า password เพิ้อเอาไว้ดึงค่าที่กรอก*/}
+                 <FormErrorMessage>
+                     { errors.password && errors.password?.message}
+                 </FormErrorMessage>
               </FormControl>
               <Stack spacing={10}>
                 <Stack
