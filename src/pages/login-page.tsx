@@ -12,6 +12,7 @@ import {
     Text,
     useColorModeValue,
     FormErrorMessage,
+    useToast,
   } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { LoginFormInput } from '../app-types/login-form-input.type';
@@ -20,16 +21,28 @@ import * as yup from "yup";
 import { yupResolver } from '@hookform/resolvers/yup';
   
   export default function login() {
+    const toast = useToast();
+
     //schema validation
     const schema = yup.object().shape({
        email: yup.string().required('ป้อนข้อมูลอีเมล์ด้วย').email('รูปแบบอีเมลไม่ถูกต้อง'),
        password: yup.string().required('ป้อนข้อมูลรหัสผ่านด้วย').min(4,'รหัสผ่านต้องอย่างน้อย 3 อักษรขึ้นไป'),
     });
-    const { register, handleSubmit, formState: { errors } } = useForm<LoginFormInput>({
+    const { register, handleSubmit, formState: { errors , isSubmitting } } = useForm<LoginFormInput>({
        resolver: yupResolver(schema),
+       mode:'all',
+
     });
     const onSubmit: SubmitHandler<LoginFormInput> = (data) => {
       console.log(data);
+      toast({
+        title:'result',
+        description: JSON.stringify(data),
+        status:'success',
+        duration:3000,
+        isClosable: true,
+        position:'top-right',
+      })
     }
     // const navigate = useNavigate();
 
@@ -77,6 +90,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
                   <Link color={'blue.400'}>Forgot password?</Link>
                 </Stack>
                 <Button
+                  isLoading={isSubmitting}
+
                   type='submit'
                   onClick={()=>{
                     // navigate('/dashboard')
