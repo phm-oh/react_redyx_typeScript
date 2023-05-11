@@ -1,13 +1,15 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, getDefaultMiddleware } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from '../store'
 
 export interface AuthState {
   profile: string
+  email:string
 }
 
 const initialState: AuthState = {
   profile: 'Phanumet',
+  email:'phanumet@gmail.com',
 }
 
 export const authSlice = createSlice({
