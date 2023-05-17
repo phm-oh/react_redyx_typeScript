@@ -8,3 +8,4 @@ export interface LoginErrorResponse {
     message:     string;
     status_code: number;
 }
+

@@ -26,7 +26,7 @@ import { LoginErrorResponse } from '../app-types/login.type';
 export default function login() {
   const toast = useToast();
   const dispatch = useAppDispatch();
-
+  const navigate = useNavigate();
 
   //schema validation
   const schema = yup.object().shape({
@@ -43,6 +43,9 @@ export default function login() {
     try {
       const result = await dispatch(loginThunk(data)).unwrap();
       console.log(result.access_token)
+      if(result.access_token){
+        navigate('/dashboard');
+      }
 
     } catch (error: any) {
       let err: LoginErrorResponse = error;

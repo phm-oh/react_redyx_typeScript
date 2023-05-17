@@ -29,6 +29,7 @@ createAsyncThunk <LoginResponse  , LoginFormInput ,{rejectValue:LoginErrorRespon
     try {
       const response = await login(user.email, user.password);
       console.log(response.data);
+      localStorage.setItem('token',JSON.stringify(response.data));
 
       return response.data;
     } catch (error: any) {
@@ -51,11 +52,11 @@ export const authSlice = createSlice({
     },
   },
 
-  extraReducers:(builder)=> {
-    builder.addCase(loginThunk.fulfilled ,  (state , action: PayloadAction<LoginResponse | null>) => {
-           state.loginResponse = action.payload;
-    })
-  },
+  // extraReducers:(builder)=> {
+  //   builder.addCase(loginThunk.fulfilled ,  (state , action: PayloadAction<LoginResponse | null>) => {
+  //          state.loginResponse = action.payload;
+  //   })
+  // },
 
 
 });
