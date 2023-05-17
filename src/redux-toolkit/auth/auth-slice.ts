@@ -2,12 +2,14 @@ import {
   createAsyncThunk,
   createSlice,
   getDefaultMiddleware,
+  isRejectedWithValue,
 } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 import { login, logout } from "../../services/auth.service";
 import { LoginFormInput } from "../../app-types/login-form-input.type";
-import { LoginResponse } from "../../app-types/login.type";
+import { LoginErrorResponse, LoginResponse } from "../../app-types/login.type";
+import { AxiosError } from "axios";
 
 export interface AuthState {
   profile: string;
@@ -23,16 +25,20 @@ const initialState: AuthState = {
   loginResponse : null  ,
 };
 
-export const loginThunk = createAsyncThunk(
-  "auth/loginThunkStatus",
-  async (user: LoginFormInput) => {
+export const loginThunk = 
+createAsyncThunk <LoginResponse  , LoginFormInput ,{rejectValue:LoginErrorResponse} >  
+("auth/loginThunkStatus",async (user: LoginFormInput , {rejectWithValue}) => {
     try {
       const response = await login(user.email, user.password);
       console.log(response.data);
 
       return response.data;
     } catch (error: any) {
-      console.log(error);
+      let err : AxiosError<LoginErrorResponse> = error;
+      if(!err.response){
+        throw error;
+      }
+      return rejectWithValue(err.response.data);
     }
   }
 );
@@ -46,6 +52,14 @@ export const authSlice = createSlice({
       state.email = "oh@udvc.ac.th";
     },
   },
+
+  extraReducers:(builder)=> {
+    builder.addCase(loginThunk.fulfilled ,  (state , action: PayloadAction<LoginResponse | null>) => {
+           state.loginResponse = action.payload;
+    })
+  },
+
+
 });
 
 // Action creators are generated for each case reducer function
