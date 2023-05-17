@@ -1,12 +1,10 @@
 import {
   createAsyncThunk,
   createSlice,
-  getDefaultMiddleware,
-  isRejectedWithValue,
 } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../store";
-import { login, logout } from "../../services/auth.service";
+import { login } from "../../services/auth.service";
 import { LoginFormInput } from "../../app-types/login-form-input.type";
 import { LoginErrorResponse, LoginResponse } from "../../app-types/login.type";
 import { AxiosError } from "axios";

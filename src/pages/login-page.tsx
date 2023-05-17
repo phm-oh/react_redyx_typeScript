@@ -1,54 +1,70 @@
 import {
-    Flex,
-    Box,
-    FormControl,
-    FormLabel,
-    Input,
-    Checkbox,
-    Stack,
-    Link,
-    Button,
-    Heading,
-    Text,
-    useColorModeValue,
-    FormErrorMessage,
-    useToast,
-  } from '@chakra-ui/react';
+  Flex,
+  Box,
+  FormControl,
+  FormLabel,
+  Input,
+  Checkbox,
+  Stack,
+  Link,
+  Button,
+  Heading,
+  Text,
+  useColorModeValue,
+  FormErrorMessage,
+  useToast,
+} from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { LoginFormInput } from '../app-types/login-form-input.type';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import * as yup from "yup";
 import { yupResolver } from '@hookform/resolvers/yup';
-  
-  export default function login() {
-    const toast = useToast();
+import { useAppDispatch } from '../redux-toolkit/hooks';
+import { loginThunk } from '../redux-toolkit/auth/auth-slice';
+import { LoginErrorResponse } from '../app-types/login.type';
 
-    //schema validation
-    const schema = yup.object().shape({
-       email: yup.string().required('ป้อนข้อมูลอีเมล์ด้วย').email('รูปแบบอีเมลไม่ถูกต้อง'),
-       password: yup.string().required('ป้อนข้อมูลรหัสผ่านด้วย').min(4,'รหัสผ่านต้องอย่างน้อย 3 อักษรขึ้นไป'),
-    });
-    const { register, handleSubmit, formState: { errors , isSubmitting } } = useForm<LoginFormInput>({
-       resolver: yupResolver(schema),
-       mode:'all',
+export default function login() {
+  const toast = useToast();
+  const dispatch = useAppDispatch();
 
-    });
-    const onSubmit: SubmitHandler<LoginFormInput> = (data) => {
-      console.log(data);
+
+  //schema validation
+  const schema = yup.object().shape({
+    email: yup.string().required('ป้อนข้อมูลอีเมล์ด้วย').email('รูปแบบอีเมลไม่ถูกต้อง'),
+    password: yup.string().required('ป้อนข้อมูลรหัสผ่านด้วย').min(4, 'รหัสผ่านต้องอย่างน้อย 3 อักษรขึ้นไป'),
+  });
+  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<LoginFormInput>({
+    resolver: yupResolver(schema),
+    mode: 'all',
+
+  });
+  const onSubmit: SubmitHandler<LoginFormInput> = async (data) => {
+
+    try {
+      const result = await dispatch(loginThunk(data)).unwrap();
+      console.log(result.access_token)
+
+    } catch (error: any) {
+      let err: LoginErrorResponse = error;
+      // console.log(data);
       toast({
-        title:'result',
-        description: JSON.stringify(data),
-        status:'success',
-        duration:3000,
+        title: 'เกิดข้อผิดพลาด',
+        description: err.message,
+        status: 'error',
+        duration: 3000,
         isClosable: true,
-        position:'top-right',
+        position: 'top-right',
       })
     }
-    // const navigate = useNavigate();
 
 
-    return (
-       <form onSubmit={handleSubmit(onSubmit)}  noValidate>
+
+  }
+  // const navigate = useNavigate();
+
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)} noValidate>
       <Flex
         minH={'100vh'}
         align={'center'}
@@ -69,17 +85,17 @@ import { yupResolver } from '@hookform/resolvers/yup';
             <Stack spacing={4}>
               <FormControl id="email" isInvalid={errors.email ? true : false}>
                 <FormLabel>Email address</FormLabel>
-                <Input type="email" {...register("email")}/>  { /*เป็นการลงทะเบียนตั้งชื่อว่า email เพิ้อเอาไว้ดึงค่าที่กรอก*/}
-                 <FormErrorMessage>
-                    { errors.email && errors.email?.message }
-                 </FormErrorMessage>
+                <Input type="email" {...register("email")} />  { /*เป็นการลงทะเบียนตั้งชื่อว่า email เพิ้อเอาไว้ดึงค่าที่กรอก*/}
+                <FormErrorMessage>
+                  {errors.email && errors.email?.message}
+                </FormErrorMessage>
               </FormControl>
               <FormControl id="password" isInvalid={errors.password ? true : false}>
                 <FormLabel>Password</FormLabel>
-                <Input type="password" {...register("password")}/> {/*เป็นการลงทะเบียนตั้งชื่อว่า password เพิ้อเอาไว้ดึงค่าที่กรอก*/}
-                 <FormErrorMessage>
-                     { errors.password && errors.password?.message}
-                 </FormErrorMessage>
+                <Input type="password" {...register("password")} /> {/*เป็นการลงทะเบียนตั้งชื่อว่า password เพิ้อเอาไว้ดึงค่าที่กรอก*/}
+                <FormErrorMessage>
+                  {errors.password && errors.password?.message}
+                </FormErrorMessage>
               </FormControl>
               <Stack spacing={10}>
                 <Stack
@@ -93,7 +109,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
                   isLoading={isSubmitting}
                   // loadingText={'กำลังเข้าระบบ'}
                   type='submit'
-                  onClick={()=>{
+                  onClick={() => {
                     // navigate('/dashboard')
                   }}
                   bg={'blue.400'}
@@ -108,6 +124,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
           </Box>
         </Stack>
       </Flex>
-      </form>
-    );
-  }
+    </form>
+  );
+}
