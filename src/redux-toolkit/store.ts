@@ -1,10 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit'
 import authReducer from './auth/auth-slice'
+import thingReducer from './thing/thing-slice'
 
 
 export const store = configureStore({
   reducer: {
-    authSate: authReducer
+    authSate: authReducer ,
+    thingSate: thingReducer
   },
 })
 

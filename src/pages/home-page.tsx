@@ -11,12 +11,19 @@ import {
 
 import homepageStyle from "../style/homepage.module.css";
 import { Link, useNavigate } from "react-router-dom";
-import { useAppSelector } from "../redux-toolkit/hooks";
+import { useAppDispatch, useAppSelector } from "../redux-toolkit/hooks";
 import { selectAuthSate } from "../redux-toolkit/auth/auth-slice";
+import { selectThinghSate, updateThingAcion } from "../redux-toolkit/thing/thing-slice";
 
 export default function HomePage() {
   const navigate = useNavigate();
   const authState = useAppSelector(selectAuthSate);
+  const thingState = useAppSelector(selectThinghSate);
+  const dispatch = useAppDispatch();
+  const updateThing = () =>{
+      dispatch(updateThingAcion());
+  }
+  
 
   return (
     <Container maxW={"5xl"}>
@@ -27,15 +34,26 @@ export default function HomePage() {
         py={{ base: 20, md: 28 }}
       >
         <p className="myTitle">ยินดีต้อนรับ {authState.profile}</p>
-        <p className={homepageStyle.title}>Hello</p>
+        <p className={homepageStyle.title}>
+        <Button
+              rounded={"full"}
+              px={6}
+              colorScheme={"green"}
+              bg={"green.400"}
+              _hover={{ bg: "green.500" }}
+              onClick={updateThing}
+            >
+             เปลี่ยนภาษา
+            </Button>
+        </p>
         <Heading
           fontWeight={600}
           fontSize={{ base: "3xl", sm: "4xl", md: "6xl" }}
           lineHeight={"110%"}
         >
-          ระบบจองห้องประชุมออนไลน์{" "}
+           { thingState.thaiMessage}
           <Text as={"p"} color={"orange.400"}>
-            Room Booking System
+          { thingState.engMessage}
           </Text>
         </Heading>
 
